@@ -1,13 +1,42 @@
-async function cata(){
-    const cataas = await fetch('https://cataas.com/api/tags')
-    let json =await cataas.json();
-    console.log(json);
-    let num1 = json.slice(4,9);
-    let num2= json.slice(14,19);
 
+
+async function recuperaGatti(){
+    const response = await fetch('https://cataas.com/api/tags')
+    const responseJson = await response.json();
+    const primoRecupero = responseJson.slice(5, 11)
+    const secondoRecupero = responseJson.slice(15, 21)
+    const arrGatti = primoRecupero.concat(secondoRecupero) 
+    const select = document.querySelector('.scelta')
+    
+    arrGatti.forEach(gatto => {
+        let gattoSelezionado = document.createElement('option')
+        gattoSelezionado.textContent = gatto;
+        gattoSelezionado.value = gatto;
+        select.appendChild(gattoSelezionado)
+    }) 
+
+    async function chiamata(){
+        select.addEventListener('change', async()=> {
+            const gattoCasualeResponse = await fetch(`https://cataas.com/cat/${select.value}?json=true`)
+            const gattoFinale = await gattoCasualeResponse.json()
+            
+            const img = document.createElement('img')
+            document.body.appendChild(img);
+            img.src = `https://cataas.com${gattoFinale.url}`
+
+            let pam = document.createElement('h2');
+            document.body.appendChild(pam)
+            pam.textContent = gattoFinale.tags.join('-');
+
+        })
+    }
+
+    chiamata()
+
+    
+    
+
+    
 }
-cata()
 
-let container = document.getElementById('div');
-
-let newnod = document.createElement('li')
+recuperaGatti()
